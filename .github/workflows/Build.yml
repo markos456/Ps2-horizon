@@ -1,0 +1,30 @@
+name: Build PS2 Horizon
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build with PS2SDK
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/src" \
+            -w /src \
+            ghcr.io/ps2dev/ps2dev:latest \
+            bash -lc 'export PS2DEV=/usr/local/ps2dev; export PS2SDK="$PS2DEV/ps2sdk"; export GSKIT="$PS2DEV/gsKit"; export PATH="$PATH:$PS2DEV/bin:$PS2DEV/ee/bin:$PS2DEV/iop/bin:$PS2DEV/dvp/bin:$PS2SDK/bin"; make'
+
+      - name: Verify output
+        run: test -s horizon.elf
+
+      - name: Upload ELF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ps2-horizon-elf
+          path: horizon.elf
+          if-no-files-found: error
