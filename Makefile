@@ -6,6 +6,6 @@ EE_INCS += -I$(GSKIT)/include
 all: $(EE_BIN)
 
 clean:
-\trm -f $(EE_BIN) $(EE_OBJS)
+	rm -f $(EE_BIN) $(EE_OBJS)
 
 include $(PS2SDK)/samples/Makefile.eeglobal
